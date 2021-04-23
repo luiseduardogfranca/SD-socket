@@ -1,4 +1,5 @@
 import socket
+from time import sleep 
 
 class Client():
     def __init__(self):
@@ -16,16 +17,26 @@ class Client():
         self.tcp.close()
 
     def send_message(self, message):
-        self.tcp.send(b"message")
+        self.tcp.sendall(str(message).encode())
+
+    def received_message(self):
+        sleep(2)
+        return self.tcp.recv(1024).decode()
 
 client = Client()
 client.connect_server()
 
-print("Conectando ao servidor. Para sair digite 0.")
-msg = input("Forneca a menssagem:")
+print("<<<   Iniciando conexão com a central   >>>")
+print("Conectando a central da empresa. Para sair digite 0.\n")
 
-while msg != "0":
-    client.send_message(msg)
-    msg = input("Forneca a menssagem:")
+msg_code = input("Forneçaa o código do produto (Ex.: 123): ")
+
+while msg_code != "0":
+    client.send_message(msg_code)
+
+    response = client.received_message()
+    print("\n>>>>> Tem", response, "produto(s) com código", msg_code, ".\n")
+
+    msg_code = input("Forneçaa o código do produto (Ex.: 123): ")
 
 client.close_connection()

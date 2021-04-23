@@ -1,4 +1,5 @@
 import socket
+from dao_market import Market
 
 class Server():
     def __init__(self):
@@ -20,14 +21,23 @@ class Server():
 server = Server()
 server.run_server() 
 
+market = Market()
+
+print("<<<   Iniciando abertura da central   >>>\n")
 while True:
     connection, client = server.accept_connection()
-    print("Conectado por", client)
+    print(">>> Filial: ", client, "conectada.\n")
 
     while True: 
-        msg = connection.recv(1024)
-        if not msg: break 
-        print(client, msg)
+        code_received = connection.recv(1024).decode()
+        
+        if not code_received: break 
 
-    print("Finalizando conex do cliente", client)
+        amount_product = market.get_amount_products_by_code(code_received)
+        
+        connection.send(str(amount_product).encode())
+
+        print("Produto de cod.", code_received, "com quantidade:", amount_product)
+        print("Resposta enviada com sucesso.\n")
+    print("<<< Finalizando conexão com a filial ", client, ".\n")
     connection.close()
