@@ -39,6 +39,6 @@ python3 client.py
 
 3. Para finalizar o programa no lado client basta digitar o valor *0*.
 
-Equipe:
+### Equipe:
 
 - Luís Eduardo Gomes França
