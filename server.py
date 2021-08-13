@@ -9,6 +9,7 @@ class Server():
         self.HOST=""
         self.PORT=5000
         self.entitys_alloweds = ["products"]
+        self.market = Market()
         self.create_tcp_connection()
 
     def create_tcp_connection(self):
@@ -33,7 +34,6 @@ class Server():
 
     def get_response(self, request):
         codes = Codes() 
-        market = Market()
 
         request = json.loads(request)
 
@@ -48,7 +48,7 @@ class Server():
         if request["method"] == "find":
             obj = request["object"]
 
-            product = market.get_product_by_code(obj["code"])
+            product = self.market.get_product_by_code(obj["code"])
 
             code, msg = codes.get_msg(10)
 
@@ -60,7 +60,7 @@ class Server():
         elif request["method"] == "add":
             obj = request["object"]
 
-            is_added = market.add_product(obj)
+            is_added = self.market.add_product(obj)
             
             code, msg = codes.get_msg(10)
         
@@ -75,7 +75,7 @@ class Server():
         elif request["method"] == "del":
             obj = request["object"]
 
-            is_removed = market.remove_product(obj["code"])
+            is_removed = self.market.remove_product(obj["code"])
             
             code, msg = codes.get_msg(10)
 
